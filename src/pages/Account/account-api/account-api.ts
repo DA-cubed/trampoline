@@ -54,6 +54,17 @@ class SimpleAccountAPI extends AccountApiType {
     };
   };
 
+  async createUnsignedUserOp(
+    info: TransactionDetailsForUserOp): Promise<UserOperationStruct> {
+      const userOp = await super.createUnsignedUserOp(info);
+      await userOp.preVerificationGas;
+      userOp.preVerificationGas = Number(await userOp.preVerificationGas) * 2.5;
+      userOp.callGasLimit = Number(await userOp.callGasLimit) * 2.5;
+      console.log('sadf');
+      console.log(userOp);
+      return userOp;
+    }
+
   async _getAccountContract(): Promise<SimpleAccount> {
     if (this.accountContract == null) {
       this.accountContract = SimpleAccount__factory.connect(

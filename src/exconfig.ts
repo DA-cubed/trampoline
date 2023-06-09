@@ -8,10 +8,11 @@ export default {
     chainID: '5',
     family: 'EVM',
     name: 'Goerli',
-    provider: 'https://goerli.infura.io/v3/bdabe9d2f9244005af0f566398e648da',
+    provider: 'https://goerli.infura.io/v3/98ca88c0245b473e8ae0274702536b17',
     entryPointAddress: '0x0576a174D229E3cFA37253523E645A78A0C91B57',
     bundler:
-      'https://node.stackup.sh/v1/rpc/420c8ba682cabe5ab405980e35c9b218af18f4702c46aaec4627ba9050fcc4ee',
+      // 'https://node.stackup.sh/v1/rpc/006aef92ec2aa68080f7a66eeac8b0a3d6d402a6371d209f49da9d12f7c08ff6',
+      'https://api.blocknative.com/v1/goerli/bundler',
     baseAsset: {
       symbol: 'ETH',
       name: 'ETH',
