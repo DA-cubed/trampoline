@@ -55,9 +55,10 @@ const AccountInfo = ({
             sx={{
               minWidth: 300,
               borderRadius: 4,
+              margin: '4',
               cursor: 'pointer',
               '&:hover': {
-                background: '#f2f4f6',
+                background: '#000',
               },
             }}
           >

@@ -1,4 +1,4 @@
-import { Stack, Typography, Chip, Tooltip } from '@mui/material';
+import { Stack, Typography, Chip, Tooltip, Box } from '@mui/material';
 import React, { useEffect } from 'react';
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
 import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
@@ -11,6 +11,7 @@ import {
 import { getAccountEVMData } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import darkTheme from '../../../../assets/themes/darkTheme';
 
 const AccountBalanceInfo = ({ address }: { address: string }) => {
   const navigate = useNavigate();
@@ -33,11 +34,17 @@ const AccountBalanceInfo = ({ address }: { address: string }) => {
   return (
     <Stack spacing={1} justifyContent="center" alignItems="center">
       {activeNetwork.baseAsset.image && (
-        <img
-          height={40}
-          src={activeNetwork.baseAsset.image}
-          alt={`${activeNetwork.baseAsset.name} asset logo`}
-        />
+        <Box
+          bgcolor={darkTheme.palette.primary.light}
+          p={2}
+          borderRadius={'100%'}
+        >
+          <img
+            height={40}
+            src={activeNetwork.baseAsset.image}
+            alt={`${activeNetwork.baseAsset.name} asset logo`}
+          />
+        </Box>
       )}
       {accountData !== 'loading' &&
         accountData.balances &&

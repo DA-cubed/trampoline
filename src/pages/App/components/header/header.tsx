@@ -5,6 +5,7 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  Typography,
   Stack,
 } from '@mui/material';
 import React from 'react';
@@ -15,6 +16,7 @@ import {
   getSupportedNetworks,
 } from '../../../Background/redux-slices/selectors/networkSelectors';
 import { useBackgroundSelector } from '../../hooks';
+import darkTheme from '../../../../assets/themes/darkTheme';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -44,9 +46,16 @@ const Header = () => {
         sx={{ cursor: 'pointer' }}
         onClick={() => navigate('/')}
       >
-        <img height={30} src={logo} className="App-logo" alt="logo" />
+        <Typography
+          fontWeight={'bold'}
+          color={darkTheme.palette.primary.light}
+          variant="h5"
+          fontFamily={'monospace'}
+        >
+          📦 DA(cubed)
+        </Typography>
       </Stack>
-      <Stack
+      {/* <Stack
         direction="row"
         spacing={2}
         justifyContent="center"
@@ -69,7 +78,7 @@ const Header = () => {
           </Select>
         </FormControl>
         <SettingsIcon fontSize="large" />
-      </Stack>
+      </Stack> */}
     </Box>
   );
 };

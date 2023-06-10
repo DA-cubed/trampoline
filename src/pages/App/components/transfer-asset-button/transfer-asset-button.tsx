@@ -5,6 +5,7 @@ import { Avatar, Stack, Tooltip, Typography, useTheme } from '@mui/material';
 import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
 import { ethers } from 'ethers';
 import { useNavigate } from 'react-router-dom';
+import darkTheme from '../../../../assets/themes/darkTheme';
 
 const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
   const theme = useTheme();
@@ -38,7 +39,7 @@ const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
           spacing={'4px'}
           sx={{ cursor: 'not-allowed', opacity: 0.5 }}
         >
-          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+          <Avatar sx={{ bgcolor: darkTheme.palette.primary.light }}>
             <StoreIcon />
           </Avatar>
           <Typography variant="button">Buy</Typography>
@@ -50,7 +51,7 @@ const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
         spacing={'4px'}
         sx={{ cursor: 'pointer' }}
       >
-        <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+        <Avatar sx={{ bgcolor: darkTheme.palette.primary.light }}>
           <SendRoundedIcon
             onClick={() => navigate('/transfer-assets')}
             sx={{ transform: 'rotate(-45deg)', ml: '4px', mb: '6px' }}
@@ -65,7 +66,7 @@ const TransferAssetButton = ({ activeAccount }: { activeAccount: string }) => {
           spacing={'4px'}
           sx={{ cursor: 'not-allowed', opacity: 0.5 }}
         >
-          <Avatar sx={{ bgcolor: theme.palette.primary.main }}>
+          <Avatar sx={{ bgcolor: darkTheme.palette.primary.light }}>
             <SwapHorizIcon />
           </Avatar>
           <Typography variant="button">Swap</Typography>
