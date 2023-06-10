@@ -1,7 +1,5 @@
 <img src="src/assets/img/logo.png" width="260"/>
 
-Trampoline is a chrome extension boilerplate code to showcase your own Smart Contract Wallets with React 18 and Webpack 5 support.
-
 ## Installation and Running
 
 ### Steps:
@@ -45,7 +43,7 @@ Config of the extension can be set in `excnfig.json` file.
   // Show default transaction screen
   "showTransactionConfirmationScreen": true,
   // stateVersion is the version of state stored in localstorage of your browser. If you want to reset your extension, change this number to a new version and that will invalidate the older state.
-  stateVersion: '0.1',
+  "stateVersion": "0.1",
   // Network that your SCW supports. Currently this app only supports a single network, we will soon have support for multiple networks in future
   "network": {
     "chainID": "5",
