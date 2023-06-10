@@ -2,37 +2,31 @@ import {
   Box,
   Button,
   Card,
-  Checkbox,
   CircularProgress,
   Container,
-  Stack,
   Step,
   StepContent,
   StepLabel,
   Stepper,
+  ThemeProvider,
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useCallback, useMemo } from 'react';
+import { BigNumber, ethers } from 'ethers';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useProvider } from 'wagmi';
+import darkTheme from '../../../../assets/themes/darkTheme';
 import { getAccountData } from '../../../Background/redux-slices/account';
 import {
   getAccountEVMData,
   getActiveAccount,
 } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
-import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
 import AccountBalanceInfo from '../../components/account-balance-info';
 import AccountInfo from '../../components/account-info';
 import Header from '../../components/header';
-import { useState } from 'react';
-import { BigNumber, ethers } from 'ethers';
-import { useProvider } from 'wagmi';
-import { useEffect } from 'react';
-import {
-  sendTransaction,
-  sendTransactionsRequest,
-} from '../../../Background/redux-slices/transactions';
-import { useNavigate } from 'react-router-dom';
+import { useBackgroundDispatch, useBackgroundSelector } from '../../hooks';
 
 const DeployAccount = () => {
   const navigate = useNavigate();
@@ -140,9 +134,9 @@ const DeployAccount = () => {
   }, [activeAccount, navigate]);
 
   return (
-    <Container sx={{ width: '62vw', height: '100vh' }}>
-      <Header />
-      <Card sx={{ ml: 4, mr: 4, mt: 2, mb: 2 }}>
+    <ThemeProvider theme={darkTheme}>
+      <Container sx={{ width: '62vw', height: '100vh' }}>
+        <Header />
         <Box sx={{ p: 2 }}>
           <Typography textAlign="center" variant="h6">
             Account not deployed
@@ -212,8 +206,8 @@ const DeployAccount = () => {
             </Step>
           </Stepper>
         </Box>
-      </Card>
-    </Container>
+      </Container>
+    </ThemeProvider>
   );
 };
 
