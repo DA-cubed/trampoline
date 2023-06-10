@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Card,
   CircularProgress,
   Container,
   Step,
@@ -49,7 +48,6 @@ const DeployAccount = () => {
 
   useEffect(() => {
     if (walletDeployed) {
-      alert('Account already deployed');
       navigate('/');
     }
   }, [navigate, walletDeployed]);
@@ -135,7 +133,7 @@ const DeployAccount = () => {
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <Container sx={{ width: '62vw', height: '100vh' }}>
+      <Container sx={{ width: { base: '100vw', lg: '62vw' }, height: '100vh' }}>
         <Header />
         <Box sx={{ p: 2 }}>
           <Typography textAlign="center" variant="h6">

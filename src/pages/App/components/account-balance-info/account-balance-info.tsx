@@ -49,7 +49,7 @@ const AccountBalanceInfo = ({ address }: { address: string }) => {
       {accountData !== 'loading' &&
         accountData.balances &&
         accountData.balances[activeNetwork.baseAsset.symbol] && (
-          <Typography variant="h3">
+          <Typography>
             {
               accountData.balances[activeNetwork.baseAsset.symbol].assetAmount
                 .amount

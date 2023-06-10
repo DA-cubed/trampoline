@@ -19,6 +19,7 @@ import { ethers } from 'ethers';
 import { useBackgroundSelector } from '../../hooks';
 import { getActiveAccount } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { useNavigate } from 'react-router-dom';
+import darkTheme from '../../../../assets/themes/darkTheme';
 
 const TransferAsset = () => {
   const navigate = useNavigate();
@@ -110,9 +111,11 @@ const TransferAsset = () => {
               <Button
                 disabled={loader}
                 onClick={sendEth}
-                sx={{ mt: 4 }}
+                sx={{ mt: 4, bgcolor: darkTheme.palette.primary.main }}
                 size="large"
                 variant="contained"
+
+                // bgcolor={}
               >
                 Send
                 {loader && (

@@ -1,9 +1,10 @@
-import { Box, Tooltip, Typography } from '@mui/material';
+import { Box, Button, Tooltip, Typography } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 import { getAccountInfo } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { useBackgroundSelector } from '../../hooks';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import darkTheme from '../../../../assets/themes/darkTheme';
 
 const AccountInfo = ({
   address,
@@ -13,7 +14,6 @@ const AccountInfo = ({
   showOptions: boolean;
 }) => {
   const [tooltipMessage, setTooltipMessage] = useState<string>('Copy address');
-  console.log('hi');
 
   const accountInfo = useBackgroundSelector((state) =>
     getAccountInfo(state, address)
@@ -29,53 +29,51 @@ const AccountInfo = ({
       component="div"
       display="flex"
       flexDirection="row"
-      justifyContent="center"
       alignItems="center"
       sx={{
-        borderBottom: '1px solid rgba(0, 0, 0, 0.20)',
         position: 'relative',
       }}
     >
-      <Box
-        component="div"
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        flexGrow={1}
-      >
+      <Box component="div" display="flex" flexDirection="column" flexGrow={1}>
+        <Typography
+          color={darkTheme.palette.primary.light}
+          fontWeight={'bold'}
+          pb="8px"
+        >
+          WALLET INFO
+        </Typography>
         <Tooltip title={tooltipMessage} enterDelay={0}>
           <Box
             onClick={copyAddress}
             component="div"
             display="flex"
             flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
             sx={{
-              minWidth: 300,
               borderRadius: 4,
-              margin: '4',
               cursor: 'pointer',
-              '&:hover': {
-                background: '#000',
-              },
             }}
           >
             <Typography variant="h6">{accountInfo.name}</Typography>
 
-            <Box
-              component="div"
-              display="flex"
-              flexDirection="row"
-              justifyContent="center"
-              alignItems="center"
-            >
-              <Typography variant="overline">
-                {address.substring(0, 5)}...
-                {address.substring(address.length - 5)}
-              </Typography>
-              <ContentCopyIcon sx={{ height: 16, cursor: 'pointer' }} />
+            <Box>
+              <Button
+                startIcon={
+                  <ContentCopyIcon sx={{ height: 16, cursor: 'pointer' }} />
+                }
+              >
+                {/* truncate */}
+                <Typography
+                  variant="overline"
+                  sx={{
+                    maxWidth: '50vw',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {address}
+                </Typography>
+              </Button>
             </Box>
           </Box>
         </Tooltip>
