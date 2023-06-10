@@ -1,40 +1,14 @@
 import { UserOperationStruct } from '@account-abstraction/contracts';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Container,
-  Paper,
-  Stack,
-  TextField,
-  Typography,
-} from '@mui/material';
+import { Box, Button, CircularProgress, Container, Paper, Stack, TextField, Typography, } from '@mui/material';
 import { BigNumber, ethers } from 'ethers';
 import React, { useCallback, useState } from 'react';
-import {
-  AccountImplementations,
-  ActiveAccountImplementation,
-} from '../../../App/constants';
-import {
-  useBackgroundDispatch,
-  useBackgroundSelector,
-} from '../../../App/hooks';
-import {
-  getAccountInfo,
-  getActiveAccount,
-} from '../../../Background/redux-slices/selectors/accountSelectors';
+import { AccountImplementations, ActiveAccountImplementation, } from '../../../App/constants';
+import { useBackgroundDispatch, useBackgroundSelector, } from '../../../App/hooks';
+import { getAccountInfo, getActiveAccount, } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { selectCurrentOriginPermission } from '../../../Background/redux-slices/selectors/dappPermissionSelectors';
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
-import {
-  selectCurrentPendingSendTransactionRequest,
-  selectCurrentPendingSendTransactionUserOp,
-} from '../../../Background/redux-slices/selectors/transactionsSelectors';
-import {
-  createUnsignedUserOp,
-  rejectTransaction,
-  sendTransaction,
-  setUnsignedUserOperation,
-} from '../../../Background/redux-slices/transactions';
+import { selectCurrentPendingSendTransactionRequest, selectCurrentPendingSendTransactionUserOp, } from '../../../Background/redux-slices/selectors/transactionsSelectors';
+import { createUnsignedUserOp, rejectTransaction, sendTransaction, setUnsignedUserOperation, } from '../../../Background/redux-slices/transactions';
 import { EthersTransactionRequest } from '../../../Background/services/types';
 import AccountInfo from '../../components/account-info';
 import OriginInfo from '../../components/origin-info';
@@ -68,29 +42,24 @@ const SignTransactionConfirmation = ({
   const [paymasterUrl, setPaymasterUrl] = useState<string>('');
   const backgroundDispatch = useBackgroundDispatch();
 
+  console.log('please')
+  console.log(transactions)
+
   const addPaymaster = useCallback(async () => {
     console.log(paymasterUrl);
     setAddPaymasterLoader(true);
+    console.log('mytest')
     if (paymasterUrl) {
-      const paymasterRPC = new ethers.providers.JsonRpcProvider(paymasterUrl, {
-        name: 'Paymaster',
-        chainId: parseInt(activeNetwork.chainID),
-      });
+    console.log('mytestinside')
+      const paymasterRPC = new ethers.providers.JsonRpcProvider(paymasterUrl, { name: 'Paymaster', chainId: parseInt(activeNetwork.chainID), });
       try {
-        const paymasterResp = await paymasterRPC.send(
-          'eth_getPaymasterAndDataSize',
-          [userOp]
-        );
-        backgroundDispatch(
-          setUnsignedUserOperation({
-            ...userOp,
-            paymasterAndData: paymasterResp,
-            verificationGasLimit: paymasterResp.verificationGasLimit,
-          })
-        );
+        console.log(paymasterUrl)
+        const paymasterResp = await paymasterRPC.send( 'eth_getPaymasterAndDataSize', [userOp]);
+        backgroundDispatch( setUnsignedUserOperation({ ...userOp, paymasterAndData: paymasterResp, verificationGasLimit: paymasterResp.verificationGasLimit, }));
       } catch (e) {
         console.log(e);
-        setPaymasterError('Paymaster url returned error');
+        setPaymasterError('another Paymaster url returned error');
+        // setPaymasterError(e);
       }
       setAddPaymasterLoader(false);
     }
@@ -149,25 +118,9 @@ const SignTransactionConfirmation = ({
               >
                 Cancel
               </Button>
-              <Button
-                disabled={addPaymasterLoader}
-                sx={{ width: 150, position: 'relative' }}
-                variant="contained"
-                onClick={addPaymaster}
-              >
+              <Button disabled={addPaymasterLoader} sx={{ width: 150, position: 'relative' }} variant="contained" onClick={addPaymaster} >
                 Add
-                {addPaymasterLoader && (
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      marginTop: '-12px',
-                      marginLeft: '-12px',
-                    }}
-                  />
-                )}
+                {addPaymasterLoader && ( <CircularProgress size={24} sx={{ position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px', }} />)}
               </Button>
             </Box>
           </Paper>
