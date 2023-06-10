@@ -70,7 +70,7 @@ const SignTransactionConfirmation = ({
   const [paymasterUrl, setPaymasterUrl] = useState<string>('');
   const backgroundDispatch = useBackgroundDispatch();
 
-  console.log('please');
+  console.log('plsease');
   console.log(transactions);
 
   const addPaymaster = useCallback(async () => {
@@ -107,9 +107,13 @@ const SignTransactionConfirmation = ({
 
   return (
     <ThemeProvider theme={darkTheme}>
-      <Container>
+      <Container sx={{ bgcolor: '#000', width: '100vw', height: '100vh' }}>
         <Box sx={{ p: 2 }}>
-          <Typography textAlign="center" variant="h6">
+          <Typography
+            textAlign="center"
+            variant="h6"
+            color={darkTheme.palette.primary.light}
+          >
             Send transaction request
           </Typography>
         </Box>
@@ -120,7 +124,11 @@ const SignTransactionConfirmation = ({
           />
         )}
         <Stack spacing={2} sx={{ position: 'relative', pt: 2, mb: 4 }}>
-          <Typography variant="h6" sx-={{ p: 2 }}>
+          <Typography
+            variant="h6"
+            sx-={{ p: 2 }}
+            color={darkTheme.palette.primary.light}
+          >
             Paymaster Info
           </Typography>
           {!showAddPaymasterUI && (
@@ -187,7 +195,11 @@ const SignTransactionConfirmation = ({
               </Box>
             </Paper>
           )}
-          <Typography variant="h6" sx-={{ p: 2 }}>
+          <Typography
+            variant="h6"
+            sx-={{ p: 2 }}
+            color={darkTheme.palette.primary.light}
+          >
             {transactions.length > 1
               ? ' Transactions data'
               : 'Transaction data'}
@@ -233,7 +245,7 @@ const SignTransactionConfirmation = ({
             }}
           >
             <Box
-              justifyContent="space-around"
+              justifyContent="space-between"
               alignItems="center"
               display="flex"
               sx={{ p: 2 }}
