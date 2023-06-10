@@ -1,18 +1,46 @@
 import { UserOperationStruct } from '@account-abstraction/contracts';
-import { Box, Button, CircularProgress, Container, Paper, Stack, TextField, Typography, } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Paper,
+  Stack,
+  TextField,
+  ThemeProvider,
+  Typography,
+} from '@mui/material';
 import { BigNumber, ethers } from 'ethers';
 import React, { useCallback, useState } from 'react';
-import { AccountImplementations, ActiveAccountImplementation, } from '../../../App/constants';
-import { useBackgroundDispatch, useBackgroundSelector, } from '../../../App/hooks';
-import { getAccountInfo, getActiveAccount, } from '../../../Background/redux-slices/selectors/accountSelectors';
+import {
+  AccountImplementations,
+  ActiveAccountImplementation,
+} from '../../../App/constants';
+import {
+  useBackgroundDispatch,
+  useBackgroundSelector,
+} from '../../../App/hooks';
+import {
+  getAccountInfo,
+  getActiveAccount,
+} from '../../../Background/redux-slices/selectors/accountSelectors';
 import { selectCurrentOriginPermission } from '../../../Background/redux-slices/selectors/dappPermissionSelectors';
 import { getActiveNetwork } from '../../../Background/redux-slices/selectors/networkSelectors';
-import { selectCurrentPendingSendTransactionRequest, selectCurrentPendingSendTransactionUserOp, } from '../../../Background/redux-slices/selectors/transactionsSelectors';
-import { createUnsignedUserOp, rejectTransaction, sendTransaction, setUnsignedUserOperation, } from '../../../Background/redux-slices/transactions';
+import {
+  selectCurrentPendingSendTransactionRequest,
+  selectCurrentPendingSendTransactionUserOp,
+} from '../../../Background/redux-slices/selectors/transactionsSelectors';
+import {
+  createUnsignedUserOp,
+  rejectTransaction,
+  sendTransaction,
+  setUnsignedUserOperation,
+} from '../../../Background/redux-slices/transactions';
 import { EthersTransactionRequest } from '../../../Background/services/types';
 import AccountInfo from '../../components/account-info';
 import OriginInfo from '../../components/origin-info';
 import Config from '../../../../exconfig';
+import darkTheme from '../../../../assets/themes/darkTheme';
 
 const SignTransactionComponent =
   AccountImplementations[ActiveAccountImplementation].Transaction;
@@ -42,20 +70,32 @@ const SignTransactionConfirmation = ({
   const [paymasterUrl, setPaymasterUrl] = useState<string>('');
   const backgroundDispatch = useBackgroundDispatch();
 
-  console.log('please')
-  console.log(transactions)
+  console.log('please');
+  console.log(transactions);
 
   const addPaymaster = useCallback(async () => {
     console.log(paymasterUrl);
     setAddPaymasterLoader(true);
-    console.log('mytest')
+    console.log('mytest');
     if (paymasterUrl) {
-    console.log('mytestinside')
-      const paymasterRPC = new ethers.providers.JsonRpcProvider(paymasterUrl, { name: 'Paymaster', chainId: parseInt(activeNetwork.chainID), });
+      console.log('mytestinside');
+      const paymasterRPC = new ethers.providers.JsonRpcProvider(paymasterUrl, {
+        name: 'Paymaster',
+        chainId: parseInt(activeNetwork.chainID),
+      });
       try {
-        console.log(paymasterUrl)
-        const paymasterResp = await paymasterRPC.send( 'eth_getPaymasterAndDataSize', [userOp]);
-        backgroundDispatch( setUnsignedUserOperation({ ...userOp, paymasterAndData: paymasterResp, verificationGasLimit: paymasterResp.verificationGasLimit, }));
+        console.log(paymasterUrl);
+        const paymasterResp = await paymasterRPC.send(
+          'eth_getPaymasterAndDataSize',
+          [userOp]
+        );
+        backgroundDispatch(
+          setUnsignedUserOperation({
+            ...userOp,
+            paymasterAndData: paymasterResp,
+            verificationGasLimit: paymasterResp.verificationGasLimit,
+          })
+        );
       } catch (e) {
         console.log(e);
         setPaymasterError('another Paymaster url returned error');
@@ -66,126 +106,154 @@ const SignTransactionConfirmation = ({
   }, [activeNetwork.chainID, backgroundDispatch, paymasterUrl, userOp]);
 
   return (
-    <Container>
-      <Box sx={{ p: 2 }}>
-        <Typography textAlign="center" variant="h6">
-          Send transaction request
-        </Typography>
-      </Box>
-      {activeAccount && (
-        <AccountInfo activeAccount={activeAccount} accountInfo={accountInfo} />
-      )}
-      <Stack spacing={2} sx={{ position: 'relative', pt: 2, mb: 4 }}>
-        <OriginInfo permission={originPermission} />
-        <Typography variant="h6" sx-={{ p: 2 }}>
-          Paymaster Info
-        </Typography>
-        {!showAddPaymasterUI && (
-          <Paper sx={{ p: 2 }}>
-            <Typography variant="body2">
-              {userOp.paymasterAndData === '0x'
-                ? 'No paymaster has been used'
-                : ';'}
-            </Typography>
-            <Button onClick={() => setShowAddPaymasterUI(true)} variant="text">
-              Add custom
-            </Button>
-          </Paper>
+    <ThemeProvider theme={darkTheme}>
+      <Container>
+        <Box sx={{ p: 2 }}>
+          <Typography textAlign="center" variant="h6">
+            Send transaction request
+          </Typography>
+        </Box>
+        {activeAccount && (
+          <AccountInfo
+            activeAccount={activeAccount}
+            accountInfo={accountInfo}
+          />
         )}
-        {showAddPaymasterUI && (
-          <Paper sx={{ p: 2 }}>
-            <TextField
-              value={paymasterUrl}
-              onChange={(e) => setPaymasterUrl(e.target.value)}
-              sx={{ width: '100%' }}
-              label="Paymaster URL"
-              variant="standard"
-            />
-            {paymasterError}
+        <Stack spacing={2} sx={{ position: 'relative', pt: 2, mb: 4 }}>
+          <OriginInfo permission={originPermission} />
+          <Typography variant="h6" sx-={{ p: 2 }}>
+            Paymaster Info
+          </Typography>
+          {!showAddPaymasterUI && (
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="body2">
+                {userOp.paymasterAndData === '0x'
+                  ? 'No paymaster has been used'
+                  : ';'}
+              </Typography>
+              <Button
+                onClick={() => setShowAddPaymasterUI(true)}
+                variant="text"
+              >
+                Add custom
+              </Button>
+            </Paper>
+          )}
+          {showAddPaymasterUI && (
+            <Paper sx={{ p: 2 }}>
+              <TextField
+                value={paymasterUrl}
+                onChange={(e) => setPaymasterUrl(e.target.value)}
+                sx={{ width: '100%' }}
+                label="Paymaster URL"
+                variant="standard"
+              />
+              {paymasterError}
+              <Box
+                justifyContent="space-around"
+                alignItems="center"
+                display="flex"
+                sx={{ p: '16px 0px' }}
+              >
+                <Button
+                  sx={{ width: 150 }}
+                  variant="outlined"
+                  onClick={() => {
+                    setShowAddPaymasterUI(false);
+                    setAddPaymasterLoader(false);
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  disabled={addPaymasterLoader}
+                  sx={{ width: 150, position: 'relative' }}
+                  variant="contained"
+                  onClick={addPaymaster}
+                >
+                  Add
+                  {addPaymasterLoader && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-12px',
+                        marginLeft: '-12px',
+                      }}
+                    />
+                  )}
+                </Button>
+              </Box>
+            </Paper>
+          )}
+          <Typography variant="h6" sx-={{ p: 2 }}>
+            {transactions.length > 1
+              ? ' Transactions data'
+              : 'Transaction data'}
+          </Typography>
+          <Stack spacing={2}>
+            {transactions.map(
+              (transaction: EthersTransactionRequest, index) => (
+                <Paper key={index} sx={{ p: 2 }}>
+                  <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                    To:{' '}
+                    <Typography component="span" variant="body2">
+                      {transaction.to}
+                    </Typography>
+                  </Typography>
+                  <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                    Data:{' '}
+                    <Typography component="span" variant="body2">
+                      {transaction.data?.toString()}
+                    </Typography>
+                  </Typography>
+                  <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                    Value:{' '}
+                    <Typography component="span" variant="body2">
+                      {transaction.value
+                        ? ethers.utils.formatEther(transaction.value)
+                        : 0}{' '}
+                      {activeNetwork.baseAsset.symbol}
+                    </Typography>
+                  </Typography>
+                </Paper>
+              )
+            )}
+          </Stack>
+        </Stack>
+        {!showAddPaymasterUI && (
+          <Paper
+            elevation={3}
+            sx={{
+              position: 'sticky',
+              bottom: 0,
+              left: 0,
+              width: '100%',
+            }}
+          >
             <Box
               justifyContent="space-around"
               alignItems="center"
               display="flex"
-              sx={{ p: '16px 0px' }}
+              sx={{ p: 2 }}
             >
+              <Button sx={{ width: 150 }} variant="outlined" onClick={onReject}>
+                Reject
+              </Button>
               <Button
                 sx={{ width: 150 }}
-                variant="outlined"
-                onClick={() => {
-                  setShowAddPaymasterUI(false);
-                  setAddPaymasterLoader(false);
-                }}
+                variant="contained"
+                onClick={() => onSend()}
               >
-                Cancel
-              </Button>
-              <Button disabled={addPaymasterLoader} sx={{ width: 150, position: 'relative' }} variant="contained" onClick={addPaymaster} >
-                Add
-                {addPaymasterLoader && ( <CircularProgress size={24} sx={{ position: 'absolute', top: '50%', left: '50%', marginTop: '-12px', marginLeft: '-12px', }} />)}
+                Send
               </Button>
             </Box>
           </Paper>
         )}
-        <Typography variant="h6" sx-={{ p: 2 }}>
-          {transactions.length > 1 ? ' Transactions data' : 'Transaction data'}
-        </Typography>
-        <Stack spacing={2}>
-          {transactions.map((transaction: EthersTransactionRequest, index) => (
-            <Paper key={index} sx={{ p: 2 }}>
-              <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                To:{' '}
-                <Typography component="span" variant="body2">
-                  {transaction.to}
-                </Typography>
-              </Typography>
-              <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                Data:{' '}
-                <Typography component="span" variant="body2">
-                  {transaction.data?.toString()}
-                </Typography>
-              </Typography>
-              <Typography variant="subtitle2" sx={{ mb: 2 }}>
-                Value:{' '}
-                <Typography component="span" variant="body2">
-                  {transaction.value
-                    ? ethers.utils.formatEther(transaction.value)
-                    : 0}{' '}
-                  {activeNetwork.baseAsset.symbol}
-                </Typography>
-              </Typography>
-            </Paper>
-          ))}
-        </Stack>
-      </Stack>
-      {!showAddPaymasterUI && (
-        <Paper
-          elevation={3}
-          sx={{
-            position: 'sticky',
-            bottom: 0,
-            left: 0,
-            width: '100%',
-          }}
-        >
-          <Box
-            justifyContent="space-around"
-            alignItems="center"
-            display="flex"
-            sx={{ p: 2 }}
-          >
-            <Button sx={{ width: 150 }} variant="outlined" onClick={onReject}>
-              Reject
-            </Button>
-            <Button
-              sx={{ width: 150 }}
-              variant="contained"
-              onClick={() => onSend()}
-            >
-              Send
-            </Button>
-          </Box>
-        </Paper>
-      )}
-    </Container>
+      </Container>
+    </ThemeProvider>
   );
 };
 

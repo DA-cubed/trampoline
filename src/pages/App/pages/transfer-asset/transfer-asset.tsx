@@ -19,7 +19,6 @@ import { ethers } from 'ethers';
 import { useBackgroundSelector } from '../../hooks';
 import { getActiveAccount } from '../../../Background/redux-slices/selectors/accountSelectors';
 import { useNavigate } from 'react-router-dom';
-import darkTheme from '../../../../assets/themes/darkTheme';
 
 const TransferAsset = () => {
   const navigate = useNavigate();
@@ -59,82 +58,86 @@ const TransferAsset = () => {
   }, [activeAccount, navigate, toAddress, value]);
 
   return (
-    <Container sx={{ width: '62vw', height: '100vh' }}>
+    <Container sx={{ width: '100vw', height: '100vh' }}>
       <Header />
-      <Card sx={{ ml: 4, mr: 4, mt: 2, mb: 2 }}>
-        <CardContent>
-          <Box
-            component="div"
-            display="flex"
-            flexDirection="row"
-            justifyContent="center"
-            alignItems="center"
-            sx={{
-              borderBottom: '1px solid rgba(0, 0, 0, 0.20)',
-              position: 'relative',
-            }}
-          >
-            <Typography variant="h6">Transfer Eth</Typography>
-          </Box>
-          <Box
-            component="div"
-            display="flex"
-            flexDirection="column"
-            justifyContent="center"
-            alignItems="center"
-            sx={{ mt: 4 }}
-          >
-            <FormGroup sx={{ p: 2, pt: 4 }}>
-              <FormControl sx={{ m: 1, width: 300 }} variant="outlined">
-                <InputLabel htmlFor="password">Send to</InputLabel>
-                <OutlinedInput
-                  value={toAddress}
-                  onChange={(e) => setToAddress(e.target.value)}
-                  autoFocus
-                  label="Send to"
-                />
-              </FormControl>
-              <FormControl sx={{ m: 1, width: 300 }} variant="outlined">
-                <InputLabel htmlFor="password">Value</InputLabel>
-                <OutlinedInput
-                  endAdornment={
-                    <InputAdornment position="end">ETH</InputAdornment>
-                  }
-                  value={value}
-                  onChange={(e) => setValue(e.target.value)}
-                  label="Value"
-                />
-              </FormControl>
-              <Typography variant="body1" color="error">
-                {error}
-              </Typography>
-              <Button
-                disabled={loader}
-                onClick={sendEth}
-                sx={{ mt: 4, bgcolor: darkTheme.palette.primary.main }}
-                size="large"
-                variant="contained"
-
-                // bgcolor={}
-              >
-                Send
-                {loader && (
-                  <CircularProgress
-                    size={24}
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      marginTop: '-12px',
-                      marginLeft: '-12px',
-                    }}
+      <Stack gap="4" spacing="4">
+        <Card>
+          <CardContent>
+            <Box
+              component="div"
+              display="flex"
+              flexDirection="row"
+              justifyContent="center"
+              alignItems="center"
+              sx={{
+                borderBottom: '1px solid rgba(0, 0, 0, 0.20)',
+                position: 'relative',
+              }}
+            >
+              <Typography variant="h6">Transfer Eth</Typography>
+            </Box>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent>
+            <Box
+              component="div"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
+              alignItems="center"
+              sx={{ mt: 4 }}
+            >
+              <FormGroup sx={{ p: 2, pt: 4 }}>
+                <FormControl sx={{ m: 1, width: 300 }} variant="outlined">
+                  <InputLabel htmlFor="password">Send to</InputLabel>
+                  <OutlinedInput
+                    value={toAddress}
+                    onChange={(e) => setToAddress(e.target.value)}
+                    autoFocus
+                    label="Send to"
                   />
-                )}
-              </Button>
-            </FormGroup>
-          </Box>
-        </CardContent>
-      </Card>
+                </FormControl>
+                <FormControl sx={{ m: 1, width: 300 }} variant="outlined">
+                  <InputLabel htmlFor="password">Value</InputLabel>
+                  <OutlinedInput
+                    endAdornment={
+                      <InputAdornment position="end">ETH</InputAdornment>
+                    }
+                    value={value}
+                    onChange={(e) => setValue(e.target.value)}
+                    label="Value"
+                  />
+                </FormControl>
+                <Typography variant="body1" color="error">
+                  {error}
+                </Typography>
+                <Button
+                  disabled={loader}
+                  onClick={sendEth}
+                  sx={{ mt: 4 }}
+                  size="large"
+                  variant="contained"
+                >
+                  Send
+                  {loader && (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-12px',
+                        marginLeft: '-12px',
+                      }}
+                    />
+                  )}
+                </Button>
+              </FormGroup>
+            </Box>
+          </CardContent>
+        </Card>
+      </Stack>
     </Container>
   );
 };

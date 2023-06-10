@@ -15,7 +15,7 @@ const Home = () => {
       <Header />
       <Stack gap="4" spacing="4">
         {activeAccount && (
-          <Card sx={{ mb: 4 }}>
+          <Card sx={{ marginBottom: '12px' }}>
             <CardContent>
               <AccountInfo address={activeAccount}></AccountInfo>
             </CardContent>
