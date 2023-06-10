@@ -18,6 +18,8 @@ import '../Content/index';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import Config from '../../exconfig';
 import TransferAsset from './pages/transfer-asset';
+import { ThemeProvider } from '@emotion/react';
+import darkTheme from '../../assets/themes/darkTheme';
 console.debug('---- LAUNCHING WITH CONFIG ----', Config);
 
 const App = () => {
@@ -50,50 +52,52 @@ const App = () => {
   }, [activeNetwork]);
 
   return (
-    <WagmiConfig client={client}>
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <ProtectedRouteHasAccounts>
+    <ThemeProvider theme={darkTheme}>
+      <WagmiConfig client={client}>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ProtectedRouteHasAccounts>
+                <ProtectedRouteKeyringUnlocked>
+                  <Home />
+                </ProtectedRouteKeyringUnlocked>
+              </ProtectedRouteHasAccounts>
+            }
+          />
+          <Route
+            path="/transfer-assets"
+            element={
+              <ProtectedRouteHasAccounts>
+                <ProtectedRouteKeyringUnlocked>
+                  <TransferAsset />
+                </ProtectedRouteKeyringUnlocked>
+              </ProtectedRouteHasAccounts>
+            }
+          />
+          <Route
+            path="/deploy-account"
+            element={
+              <ProtectedRouteHasAccounts>
+                <ProtectedRouteKeyringUnlocked>
+                  <DeployAccount />
+                </ProtectedRouteKeyringUnlocked>
+              </ProtectedRouteHasAccounts>
+            }
+          />
+          <Route
+            path="/accounts/new"
+            element={
               <ProtectedRouteKeyringUnlocked>
-                <Home />
+                <NewAccounts />
               </ProtectedRouteKeyringUnlocked>
-            </ProtectedRouteHasAccounts>
-          }
-        />
-        <Route
-          path="/transfer-assets"
-          element={
-            <ProtectedRouteHasAccounts>
-              <ProtectedRouteKeyringUnlocked>
-                <TransferAsset />
-              </ProtectedRouteKeyringUnlocked>
-            </ProtectedRouteHasAccounts>
-          }
-        />
-        <Route
-          path="/deploy-account"
-          element={
-            <ProtectedRouteHasAccounts>
-              <ProtectedRouteKeyringUnlocked>
-                <DeployAccount />
-              </ProtectedRouteKeyringUnlocked>
-            </ProtectedRouteHasAccounts>
-          }
-        />
-        <Route
-          path="/accounts/new"
-          element={
-            <ProtectedRouteKeyringUnlocked>
-              <NewAccounts />
-            </ProtectedRouteKeyringUnlocked>
-          }
-        />
-        <Route path="/keyring/initialize" element={<InitializeKeyring />} />
-        <Route path="/onboarding/intro" element={<Onboarding />} />
-      </Routes>
-    </WagmiConfig>
+            }
+          />
+          <Route path="/keyring/initialize" element={<InitializeKeyring />} />
+          <Route path="/onboarding/intro" element={<Onboarding />} />
+        </Routes>
+      </WagmiConfig>
+    </ThemeProvider>
   );
 };
 

@@ -1,31 +1,35 @@
 import {
   Box,
   Button,
-  CardMedia,
   Container,
   Paper,
   Stack,
+  ThemeProvider,
   Typography,
+  createTheme,
 } from '@mui/material';
+import { indigo } from '@mui/material/colors';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../../../../general.css';
+
 import {
   useBackgroundDispatch,
   useBackgroundSelector,
 } from '../../../App/hooks';
-import { selectCurrentPendingPermission } from '../../../Background/redux-slices/selectors/dappPermissionSelectors';
-import logo from '../../../../assets/img/dapp_favicon_default@2x.png';
-import BoltIcon from '@mui/icons-material/Bolt';
-import {
-  getAccountInfo,
-  getActiveAccount,
-} from '../../../Background/redux-slices/selectors/accountSelectors';
 import {
   denyOrRevokePermission,
   grantPermission,
 } from '../../../Background/redux-slices/permissions';
+import {
+  getAccountInfo,
+  getActiveAccount,
+} from '../../../Background/redux-slices/selectors/accountSelectors';
+import { selectCurrentPendingPermission } from '../../../Background/redux-slices/selectors/dappPermissionSelectors';
 import AccountInfo from '../../components/account-info';
 import OriginInfo from '../../components/origin-info';
+import darkTheme from '../../../../assets/themes/darkTheme';
+import { AspectRatio } from '@mui/icons-material';
 
 const DappPermission = () => {
   const permission = useBackgroundSelector(selectCurrentPendingPermission);
@@ -76,59 +80,68 @@ const DappPermission = () => {
   }, [backgroundDispatch, permission, activeAccount]);
 
   return (
-    <Container>
-      <Box sx={{ p: 2 }}>
-        <Typography textAlign="center" variant="h6">
-          Connection Request
-        </Typography>
-      </Box>
-      <AccountInfo
-        accountInfo={accountInfo}
-        activeAccount={activeAccount || ''}
-      />
-      <Stack spacing={2} sx={{ position: 'relative', pt: 2, mb: 4 }}>
-        <OriginInfo permission={permission} />
-        <Paper sx={{ p: 2 }}>
-          <Typography variant="subtitle2" sx={{ mb: 2 }}>
-            Requesting permissions
-          </Typography>
-          <Stack spacing={1}>
-            <Typography variant="body2">• See address</Typography>
-            <Typography variant="body2">• Account Balance</Typography>
-            <Typography variant="body2">
-              • Past transactions activity
-            </Typography>
-            <Typography variant="body2">
-              • Suggest new transactions for approvals
-            </Typography>
-            <Typography variant="body2">• Request signatures</Typography>
-          </Stack>
-        </Paper>
-      </Stack>
-      <Paper
-        elevation={3}
+    <ThemeProvider theme={darkTheme}>
+      <Box
         sx={{
-          position: 'sticky',
-          bottom: 0,
-          left: 0,
-          width: '100%',
+          backgroundColor: darkTheme.palette.background.default,
+          minHeight: '100vh',
+          width: '100vw',
         }}
       >
-        <Box
-          justifyContent="space-around"
-          alignItems="center"
-          display="flex"
-          sx={{ p: 2 }}
-        >
-          <Button sx={{ width: 150 }} variant="outlined" onClick={deny}>
-            Reject
-          </Button>
-          <Button sx={{ width: 150 }} variant="contained" onClick={grant}>
-            Connect
-          </Button>
-        </Box>
-      </Paper>
-    </Container>
+        <Container>
+          <Typography
+            variant="h6"
+            color={darkTheme.palette.primary.light}
+            fontSize={20}
+            py={2}
+            pt={8}
+          >
+            CONNECTION REQUEST
+          </Typography>
+          <AccountInfo
+            accountInfo={accountInfo}
+            activeAccount={activeAccount || ''}
+          />
+          <Stack spacing={2} sx={{ position: 'relative', pt: 2, mb: 4 }}>
+            <OriginInfo permission={permission} />
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="subtitle2" sx={{ mb: 2 }}>
+                Requesting permissions
+              </Typography>
+              <Stack spacing={1}>
+                <Typography variant="body2">• See address</Typography>
+                <Typography variant="body2">• Account Balance</Typography>
+                <Typography variant="body2">
+                  • Past transactions activity
+                </Typography>
+                <Typography variant="body2">
+                  • Suggest new transactions for approvals
+                </Typography>
+                <Typography variant="body2">• Request signatures</Typography>
+              </Stack>
+            </Paper>
+          </Stack>
+          <Box
+            justifyContent="space-between"
+            alignItems="center"
+            display="flex"
+            gap={2}
+          >
+            <Button sx={{ width: 150 }} variant="outlined" onClick={deny}>
+              Reject
+            </Button>
+            <Button
+              sx={{ width: 150 }}
+              variant="contained"
+              color="primary"
+              onClick={grant}
+            >
+              Connect
+            </Button>
+          </Box>
+        </Container>
+      </Box>
+    </ThemeProvider>
   );
 };
 

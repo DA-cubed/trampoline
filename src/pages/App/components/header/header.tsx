@@ -1,22 +1,20 @@
+import SettingsIcon from '@mui/icons-material/Settings';
 import {
   Box,
-  Container,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   Stack,
-  Typography,
 } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import logo from '../../../../assets/img/logo.svg';
 import {
   getActiveNetwork,
   getSupportedNetworks,
 } from '../../../Background/redux-slices/selectors/networkSelectors';
 import { useBackgroundSelector } from '../../hooks';
-import SettingsIcon from '@mui/icons-material/Settings';
-import { useNavigate } from 'react-router-dom';
 
 const Header = () => {
   const navigate = useNavigate();

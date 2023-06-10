@@ -151,7 +151,7 @@ var options = {
     new webpack.ProgressPlugin(),
     // expose and write the allowed env vars on the compiled bundle
     new webpack.EnvironmentPlugin({
-      NODE_ENV: process.env.NODE_ENV,
+      NODE_ENV: process.env.NODE_ENV || 'development',
     }),
     new CopyWebpackPlugin({
       patterns: [
