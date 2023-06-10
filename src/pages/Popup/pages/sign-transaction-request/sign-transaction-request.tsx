@@ -120,7 +120,6 @@ const SignTransactionConfirmation = ({
           />
         )}
         <Stack spacing={2} sx={{ position: 'relative', pt: 2, mb: 4 }}>
-          <OriginInfo permission={originPermission} />
           <Typography variant="h6" sx-={{ p: 2 }}>
             Paymaster Info
           </Typography>
