@@ -1,22 +1,20 @@
 import { BigNumber, BigNumberish, ethers, Wallet } from 'ethers';
-import {
-  SimpleAccount,
-  SimpleAccount__factory,
-  SimpleAccountFactory,
-  SimpleAccountFactory__factory,
-  UserOperationStruct,
-} from '@account-abstraction/contracts';
+import { SimpleAccount, SimpleAccount__factory, SimpleAccountFactory, SimpleAccountFactory__factory, UserOperationStruct, } from '@account-abstraction/contracts';
 import { arrayify, hexConcat } from 'ethers/lib/utils';
+
 
 import { AccountApiParamsType, AccountApiType } from './types';
 import { MessageSigningRequest } from '../../Background/redux-slices/signing';
 import { TransactionDetailsForUserOp } from '@account-abstraction/sdk/dist/src/TransactionDetailsForUserOp';
 import config from '../../../exconfig';
 
-const FACTORY_ADDRESS =
-  config.factory_address || '0x6C583EE7f3a80cB53dDc4789B0Af1aaFf90e55F3';
+const FACTORY_ADDRESS = config.factory_address || '0x6C583EE7f3a80cB53dDc4789B0Af1aaFf90e55F3';
+const entrypoint_abi = '[{ "inputs": [{ "components": [{ "internalType": "address", "name": "sender", "type": "address" }, { "internalType": "uint256", "name": "nonce", "type": "uint256" }, { "internalType": "bytes", "name": "initCode", "type": "bytes" }, { "internalType": "bytes", "name": "callData", "type": "bytes" }, { "internalType": "uint256", "name": "callGasLimit", "type": "uint256" }, { "internalType": "uint256", "name": "verificationGasLimit", "type": "uint256" }, { "internalType": "uint256", "name": "preVerificationGas", "type": "uint256" }, { "internalType": "uint256", "name": "maxFeePerGas", "type": "uint256" }, { "internalType": "uint256", "name": "maxPriorityFeePerGas", "type": "uint256" }, { "internalType": "bytes", "name": "paymasterAndData", "type": "bytes" }, { "internalType": "bytes", "name": "signature", "type": "bytes" }], "internalType": "struct UserOperation", "name": "userOp", "type": "tuple" }], "name": "getUserOpHash", "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }], "stateMutability": "view", "type": "function" }]'
 
-console.log(FACTORY_ADDRESS)
+const simpleAccount_abi = '[{ "inputs": [], "name": "getNonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }]'
+
+const new_provider = new ethers.providers.JsonRpcProvider(config.network.provider);
+
 
 /**
  * An implementation of the BaseAccountAPI using the SimpleAccount contract.
@@ -60,14 +58,22 @@ class SimpleAccountAPI extends AccountApiType {
   async createUnsignedUserOp(
     info: TransactionDetailsForUserOp): Promise<UserOperationStruct> {
       const userOp = await super.createUnsignedUserOp(info);
+      console.log('sender', userOp.sender)
+      const ww = await userOp.sender
+      const zz = ww.toString().toLowerCase()
+      console.log('zzzzz', zz)
+
+      userOp.sender = zz
+      console.log(userOp.sender)
       // await userOp.preVerificationGas;
       // const a = '0x'+Number(await userOp.preVerificationGas) * 3;
       // userOp.preVerificationGas = a.toString(16)
       userOp.preVerificationGas = Number(await userOp.preVerificationGas) *2.5;
       userOp.callGasLimit = Number(await userOp.callGasLimit) * 2.5;
+      userOp.signature = "0x"
       console.log('unsigned', userOp);
-      // userOp.paymasterAndData = "0x78Fd39Fd13dc35a22D72499B5B560B1AbCE62c7b"
       //
+
       return userOp;
     }
 
@@ -106,8 +112,13 @@ class SimpleAccountAPI extends AccountApiType {
     if (await this.checkAccountPhantom()) {
       return BigNumber.from(0);
     }
+
     const accountContract = await this._getAccountContract();
-    return await accountContract.nonce();
+    const acc_contract = new ethers.Contract(accountContract.address, simpleAccount_abi, new_provider)
+    // const accountContract = await this._getAccountContract();
+    // console.log('acccontr', accountContract)
+    const nonce_arr = await acc_contract.functions.getNonce();
+    return nonce_arr[0]
   }
 
   /**
@@ -130,12 +141,7 @@ class SimpleAccountAPI extends AccountApiType {
   }
 
   async signUserOpHash(userOpHash: string): Promise<string> {
-    console.log('this',this)
-    console.log('key', this.owner.privateKey)
-    console.log('arryed', arrayify(userOpHash))
-    console.log('hash', userOpHash)
     const a = await this.owner.signMessage(arrayify(userOpHash));
-    console.log('signed', a)
     return a
   }
 
@@ -143,16 +149,21 @@ class SimpleAccountAPI extends AccountApiType {
     context: any,
     request?: MessageSigningRequest
   ): Promise<string> => {
-    console.log('context', context)
     return this.owner.signMessage(request?.rawSigningData || '');
   };
 
+
   signUserOpWithContext = async ( userOp: UserOperationStruct, context: any): Promise<UserOperationStruct> => {
-    console.log('cont', context)
-    console.log('realuserop', userOp)
+
+    const entr = new ethers.Contract(config.network.entryPointAddress, entrypoint_abi, new_provider)
+      // const client = await Client.init(config.network.provider, config.network.entryPointAddress);
+    const qwe = [userOp.sender, userOp.nonce, userOp.initCode, userOp.callData, userOp.callGasLimit, userOp.verificationGasLimit, userOp.preVerificationGas, userOp.maxFeePerGas, userOp.maxPriorityFeePerGas, userOp.paymasterAndData, userOp.signature]
+    console.log('qwe', qwe)
+    const hash = await entr.functions.getUserOpHash([userOp.sender, userOp.nonce, userOp.initCode, userOp.callData, userOp.callGasLimit, userOp.verificationGasLimit, userOp.preVerificationGas, userOp.maxFeePerGas, userOp.maxPriorityFeePerGas, userOp.paymasterAndData, userOp.signature])
+    console.log('from entrypoint', hash)
     const a = {
       ...userOp,
-      signature: await this.signUserOpHash(await this.getUserOpHash(userOp)),
+      signature: await this.signUserOpHash(await hash[0]),
     };
     console.log(a)
     return a
