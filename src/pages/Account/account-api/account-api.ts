@@ -72,8 +72,7 @@ class SimpleAccountAPI extends AccountApiType {
       userOp.callGasLimit = Number(await userOp.callGasLimit) * 2.5;
       userOp.signature = "0x"
       console.log('unsigned', userOp);
-      //
-
+      userOp.paymasterAndData = config.network.paymaster
       return userOp;
     }
 
