@@ -16,6 +16,8 @@ import config from '../../../exconfig';
 const FACTORY_ADDRESS =
   config.factory_address || '0x6C583EE7f3a80cB53dDc4789B0Af1aaFf90e55F3';
 
+console.log(FACTORY_ADDRESS)
+
 /**
  * An implementation of the BaseAccountAPI using the SimpleAccount contract.
  * - contract deployer gets "entrypoint", "owner" addresses and "index" nonce
@@ -41,6 +43,7 @@ class SimpleAccountAPI extends AccountApiType {
     super(params);
     this.factoryAddress = FACTORY_ADDRESS;
 
+    // this.owner = "e4aefe65eccaba065942581b83df0574e1f76951a5763bfb09011db17479525a"
     this.owner = params.deserializeState?.privateKey
       ? new ethers.Wallet(params.deserializeState?.privateKey)
       : ethers.Wallet.createRandom();
@@ -57,11 +60,14 @@ class SimpleAccountAPI extends AccountApiType {
   async createUnsignedUserOp(
     info: TransactionDetailsForUserOp): Promise<UserOperationStruct> {
       const userOp = await super.createUnsignedUserOp(info);
-      await userOp.preVerificationGas;
-      userOp.preVerificationGas = Number(await userOp.preVerificationGas) * 2.5;
+      // await userOp.preVerificationGas;
+      // const a = '0x'+Number(await userOp.preVerificationGas) * 3;
+      // userOp.preVerificationGas = a.toString(16)
+      userOp.preVerificationGas = Number(await userOp.preVerificationGas) *2.5;
       userOp.callGasLimit = Number(await userOp.callGasLimit) * 2.5;
-      console.log('sadf');
-      console.log(userOp);
+      console.log('unsigned', userOp);
+      // userOp.paymasterAndData = "0x78Fd39Fd13dc35a22D72499B5B560B1AbCE62c7b"
+      //
       return userOp;
     }
 
@@ -92,10 +98,7 @@ class SimpleAccountAPI extends AccountApiType {
     }
     return hexConcat([
       this.factory.address,
-      this.factory.interface.encodeFunctionData('createAccount', [
-        await this.owner.getAddress(),
-        this.index,
-      ]),
+      this.factory.interface.encodeFunctionData('createAccount', [ await this.owner.getAddress(), this.index, ]),
     ]);
   }
 
@@ -127,24 +130,32 @@ class SimpleAccountAPI extends AccountApiType {
   }
 
   async signUserOpHash(userOpHash: string): Promise<string> {
-    return await this.owner.signMessage(arrayify(userOpHash));
+    console.log('this',this)
+    console.log('key', this.owner.privateKey)
+    console.log('arryed', arrayify(userOpHash))
+    console.log('hash', userOpHash)
+    const a = await this.owner.signMessage(arrayify(userOpHash));
+    console.log('signed', a)
+    return a
   }
 
   signMessage = async (
     context: any,
     request?: MessageSigningRequest
   ): Promise<string> => {
+    console.log('context', context)
     return this.owner.signMessage(request?.rawSigningData || '');
   };
 
-  signUserOpWithContext = async (
-    userOp: UserOperationStruct,
-    context: any
-  ): Promise<UserOperationStruct> => {
-    return {
+  signUserOpWithContext = async ( userOp: UserOperationStruct, context: any): Promise<UserOperationStruct> => {
+    console.log('cont', context)
+    console.log('realuserop', userOp)
+    const a = {
       ...userOp,
       signature: await this.signUserOpHash(await this.getUserOpHash(userOp)),
     };
+    console.log(a)
+    return a
   };
 }
 
